@@ -1,0 +1,14 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+	"linter": {
+		"rules": {
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"useAnchorContent": "off"
+			},
+			"complexity": {
+				"noImportantStyles": "off"
+			}
+		}
+	}
+}

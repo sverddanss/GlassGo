@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlassGo — Пользователи</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app" data-component="UsersPage">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="btn-icon" aria-label="Назад">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="usersSearchInput" placeholder="Поиск пользователей" data-action="search-users">
+        </div>
+      </div>
+
+      <div class="sidebar-tabs" id="usersTabs" data-component="UsersTabs">
+        <button class="tab-item active" type="button" data-filter="all">Все</button>
+        <button class="tab-item" type="button" data-filter="online">Онлайн</button>
+      </div>
+
+      <div class="contacts-list" id="usersList" data-component="UsersList" aria-live="polite"></div>
+    </aside>
+
+    <section class="main">
+      <div class="main-empty" id="usersEmptyState">
+        <p>Выберите пользователя для начала диалога</p>
+      </div>
+
+      <div class="hidden" id="userProfile" data-component="UserProfile" style="display:none; flex-direction:column; height:100vh;">
+        <div class="chat-header">
+          <button class="btn-icon" id="userProfileBack" type="button" aria-label="Назад" data-action="close-user-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="chat-header-info">
+            <div class="chat-header-name" id="userProfileName" data-bind="user.fullName"></div>
+            <div class="chat-header-status" id="userProfileStatus" data-bind="user.status"></div>
+          </div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto;">
+          <div class="profile-panel-content" style="padding-top:40px;">
+            <div class="avatar avatar-xl" id="userProfileAvatar" data-bind="user.avatar"></div>
+            <h3 class="profile-panel-name" id="userProfileFullName" data-bind="user.fullName"></h3>
+            <span class="profile-panel-status" id="userProfileOnline" data-bind="user.status"></span>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title">Информация</div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <div class="info-row-content">
+                <span class="info-row-value" id="userProfileEmail" data-bind="user.email"></span>
+                <span class="info-row-label">E-mail</span>
+              </div>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <div class="info-row-content">
+                <span class="info-row-value" id="userProfileNickname" data-bind="user.nickname"></span>
+                <span class="info-row-label">Никнейм</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" style="padding: 12px 20px 40px;">
+            <button class="btn btn-primary w-full" id="startDialogBtn" type="button" data-action="create-dialog">Написать сообщение</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <button class="btn-fab" id="createDialogFab" type="button" aria-label="Создать диалог" data-action="open-user-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  </button>
+
+  <script src="js/users.js" defer></script>
+</body>
+</html>

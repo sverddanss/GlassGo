@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlassGo — Авторизация</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="auth-page" data-component="AuthApp">
+    <div class="auth-container">
+      <div class="auth-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100" height="100" aria-hidden="true">
+          <defs><linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#88d8ff;stop-opacity:0.9"/><stop offset="50%" style="stop-color:#a78bfa;stop-opacity:0.8"/><stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0.9"/></linearGradient><radialGradient id="irisGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95"/><stop offset="30%" style="stop-color:#7dd3fc;stop-opacity:0.9"/><stop offset="60%" style="stop-color:#3b82f6;stop-opacity:0.85"/><stop offset="100%" style="stop-color:#1e3a5f;stop-opacity:0.95"/></radialGradient></defs>
+          <ellipse cx="60" cy="60" rx="52" ry="32" fill="url(#eyeGrad)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="60" cy="60" r="20" fill="url(#irisGrad)"/><circle cx="60" cy="60" r="8" fill="#0f172a" opacity="0.9"/>
+        </svg>
+        <h1>GlassGo</h1>
+      </div>
+
+      <section class="auth-card glass-liquid" id="loginSection" data-component="LoginForm">
+        <h2>Вход</h2>
+        <form id="loginForm" data-action="login" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">E-mail</label>
+            <input class="form-input" type="email" id="loginEmail" name="email" autocomplete="email" required>
+            <span class="form-error" id="loginEmailError" data-error-for="email"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Пароль</label>
+            <input class="form-input" type="password" id="loginPassword" name="password" autocomplete="current-password" required>
+            <span class="form-error" id="loginPasswordError" data-error-for="password"></span>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary btn-lg" type="submit">Войти</button></div>
+        </form>
+        <div class="auth-footer">
+          <a href="#registerSection" data-action="show-register">Регистрация</a> ·
+          <a href="#forgotPasswordSection" data-action="show-forgot-password">Забыли пароль?</a>
+        </div>
+      </section>
+
+      <section class="auth-card glass-liquid hidden" id="registerSection" data-component="RegistrationForm">
+        <h2>Регистрация</h2>
+        <form id="registrationForm" data-action="register" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="registerFirstName">Имя *</label>
+            <input class="form-input" type="text" id="registerFirstName" name="firstName" required>
+            <span class="form-error" data-error-for="firstName"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerLastName">Фамилия</label>
+            <input class="form-input" type="text" id="registerLastName" name="lastName">
+            <span class="form-error" data-error-for="lastName"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerEmail">E-mail *</label>
+            <input class="form-input" type="email" id="registerEmail" name="email" autocomplete="email" required>
+            <span class="form-error" data-error-for="email"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerNickname">Никнейм</label>
+            <input class="form-input" type="text" id="registerNickname" name="nickname" minlength="1" maxlength="20">
+            <span class="form-hint">От 1 до 20 символов</span>
+            <span class="form-error" data-error-for="nickname"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerPassword">Пароль *</label>
+            <input class="form-input" type="password" id="registerPassword" name="password" autocomplete="new-password" pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+" required>
+            <span class="form-hint">Латинские буквы и цифры</span>
+            <span class="form-error" data-error-for="password"></span>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary btn-lg" type="submit">Зарегистрироваться</button></div>
+        </form>
+        <div class="auth-footer"><a href="#loginSection" data-action="show-login">Уже есть аккаунт?</a></div>
+      </section>
+
+      <section class="auth-card glass-liquid hidden" id="checkEmailSection" data-component="CheckEmailNotice">
+        <h2>Проверьте почту</h2>
+        <p class="auth-subtitle">Мы отправили письмо со ссылкой для подтверждения адреса.</p>
+        <button class="btn btn-glass" type="button" id="resendVerificationLink" data-action="resend-email-verification">Отправить ссылку повторно</button>
+      </section>
+
+      <section class="auth-card glass-liquid hidden" id="emailConfirmedSection" data-component="EmailConfirmedNotice">
+        <h2>Почта подтверждена</h2>
+        <p class="auth-subtitle">Учетная запись активирована.</p>
+        <a class="btn btn-primary" href="index.html">Перейти к сообщениям</a>
+      </section>
+
+      <section class="auth-card glass-liquid hidden" id="forgotPasswordSection" data-component="ForgotPasswordForm">
+        <h2>Восстановление пароля</h2>
+        <form id="forgotPasswordForm" data-action="request-password-reset" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="forgotEmail">E-mail</label>
+            <input class="form-input" type="email" id="forgotEmail" name="email" required>
+            <span class="form-error" data-error-for="email"></span>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary btn-lg" type="submit">Отправить ссылку</button></div>
+        </form>
+        <div class="auth-footer"><a href="#loginSection" data-action="show-login">Назад ко входу</a></div>
+      </section>
+
+      <section class="auth-card glass-liquid hidden" id="resetPasswordSection" data-component="ResetPasswordForm">
+        <h2>Новый пароль</h2>
+        <form id="resetPasswordForm" data-action="reset-password" novalidate>
+          <input type="hidden" id="resetHash" name="hash" data-bind="reset.hash">
+          <div class="form-group">
+            <label class="form-label" for="newPassword">Пароль</label>
+            <input class="form-input" type="password" id="newPassword" name="password" autocomplete="new-password" pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+" required>
+            <span class="form-error" data-error-for="password"></span>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary btn-lg" type="submit">Сохранить пароль</button></div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/auth.js" defer></script>
+</body>
+</html>

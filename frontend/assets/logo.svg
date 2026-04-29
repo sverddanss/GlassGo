@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#88d8ff;stop-opacity:0.9"/>
+      <stop offset="50%" style="stop-color:#a78bfa;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0.9"/>
+    </linearGradient>
+    <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95"/>
+      <stop offset="30%" style="stop-color:#7dd3fc;stop-opacity:0.9"/>
+      <stop offset="60%" style="stop-color:#3b82f6;stop-opacity:0.85"/>
+      <stop offset="100%" style="stop-color:#1e3a5f;stop-opacity:0.95"/>
+    </radialGradient>
+    <radialGradient id="glare" cx="35%" cy="35%" r="30%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Outer eye shape -->
+  <ellipse cx="60" cy="60" rx="52" ry="32" fill="url(#eyeGrad)" 
+           stroke="rgba(255,255,255,0.5)" stroke-width="1.5" filter="url(#glow)"/>
+  
+  <!-- Inner white -->
+  <ellipse cx="60" cy="60" rx="44" ry="26" fill="rgba(255,255,255,0.15)" 
+           stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+  
+  <!-- Iris -->
+  <circle cx="60" cy="60" r="20" fill="url(#irisGrad)" 
+          stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+  
+  <!-- Pupil -->
+  <circle cx="60" cy="60" r="8" fill="#0f172a" opacity="0.9"/>
+  
+  <!-- Glare highlight -->
+  <circle cx="53" cy="53" r="6" fill="url(#glare)"/>
+  <circle cx="67" cy="64" r="2.5" fill="rgba(255,255,255,0.6)"/>
+  
+  <!-- Upper eyelid line -->
+  <path d="M8,60 Q60,20 112,60" fill="none" stroke="rgba(255,255,255,0.6)" 
+        stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Lower eyelid line -->
+  <path d="M8,60 Q60,100 112,60" fill="none" stroke="rgba(255,255,255,0.3)" 
+        stroke-width="1.5" stroke-linecap="round"/>
+</svg>
