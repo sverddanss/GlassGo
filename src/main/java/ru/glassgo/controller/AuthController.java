@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.sql.*;
@@ -30,5 +29,6 @@ public class AuthController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+
     }
 }
