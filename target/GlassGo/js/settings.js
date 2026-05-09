@@ -2,10 +2,14 @@
  * GlassGo - Settings Page Module
  * Handles account settings and UI
  */
-
+// В самом верху каждого JS файла
+const API_BASE = '/GlassGo_war/api';
+console.log('API_BASE:', API_BASE);
+const contextPath = window.location.pathname.split('/')[1];
+this.apiBase = '/' + contextPath + '/api';
 class AccountSettingsPage {
     constructor() {
-        this.apiBase = '/api';
+        this.apiBase = '/GlassGo_war/api';
         this.currentUser = null;
         this.activeSection = 'account';
         this.init();

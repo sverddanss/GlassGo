@@ -6,7 +6,10 @@
 class AuthApp {
     constructor() {
         this.currentSection = 'loginSection';
-        this.apiBase = '/api'; // Replace with your actual API endpoint
+        // Автоматически определяем правильный API путь
+        const contextPath = window.location.pathname.split('/')[1];
+        this.apiBase = '/' + contextPath + '/api';
+        console.log('API Base URL:', this.apiBase);
         this.init();
     }
 
@@ -14,6 +17,18 @@ class AuthApp {
         this.bindEvents();
         this.checkEmailConfirmation();
         this.checkPasswordResetToken();
+        this.enableScrollOnAuthPage();
+    }
+
+    enableScrollOnAuthPage() {
+        // Убираем overflow: hidden с body на странице авторизации
+        if (document.querySelector('.auth-page')) {
+            document.body.style.overflow = 'auto';
+            document.body.style.height = 'auto';
+            document.body.style.minHeight = '100vh';
+            document.documentElement.style.overflow = 'auto';
+            document.documentElement.style.height = 'auto';
+        }
     }
 
     bindEvents() {
@@ -112,7 +127,10 @@ class AuthApp {
         this.showLoading(true);
 
         try {
-            const response = await fetch(`${this.apiBase}/auth/login`, {
+            const url = `${this.apiBase}/auth/login`;
+            console.log('Login URL:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -130,7 +148,7 @@ class AuthApp {
 
                 // Redirect to main app
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = '/' + window.location.pathname.split('/')[1] + '/index.html';
                 }, 500);
             } else {
                 this.showError('loginPasswordError', data.message || 'Неверный email или пароль');
@@ -339,7 +357,10 @@ class AuthApp {
         const resetHash = urlParams.get('hash');
 
         if (resetHash) {
-            document.getElementById('resetHash').value = resetHash;
+            const hashInput = document.getElementById('resetHash');
+            if (hashInput) {
+                hashInput.value = resetHash;
+            }
             this.showSection('resetPasswordSection');
             window.history.replaceState({}, document.title, window.location.pathname);
         }
@@ -413,8 +434,14 @@ class AuthApp {
     }
 
     showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
+        // Create container if not exists
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
 
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;

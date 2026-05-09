@@ -1,0 +1,6 @@
+ru\glassgo\controller\AuthController.class
+ru\glassgo\controller\TestDatabaseController.class
+ru\glassgo\util\DatabaseConnection.class
+ru\glassgo\controller\MessagesController.class
+ru\glassgo\controller\UsersController.class
+ru\glassgo\controller\DialogsController.class

@@ -2,10 +2,16 @@
  * GlassGo - Main Application Module
  * Handles dialogs, messages, WebSocket connections, and UI interactions
  */
+// В самом верху каждого JS файла
+const API_BASE = '/GlassGo_war/api';
+console.log('API_BASE:', API_BASE);
+const contextPath = window.location.pathname.split('/')[1];
+this.apiBase = '/' + contextPath + '/api';
+
 
 class MessengerApp {
     constructor() {
-        this.apiBase = '/api';
+        this.apiBase = '/GlassGo_war/api';
         this.ws = null;
         this.currentUser = null;
         this.currentDialog = null;

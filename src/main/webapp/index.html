@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlassGo</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="drawer-overlay" id="drawerOverlay" data-action="close-drawer"></div>
+
+  <aside class="drawer glass-liquid" id="drawer" data-component="AccountDrawer">
+    <div class="drawer-profile">
+      <div class="drawer-profile-top">
+        <div class="avatar avatar-lg" id="currentUserAvatar" data-bind="currentUser.avatar"></div>
+      </div>
+      <div class="drawer-profile-info">
+        <span class="drawer-profile-name" id="currentUserName" data-bind="currentUser.fullName"></span>
+        <span class="drawer-profile-phone" id="currentUserEmail" data-bind="currentUser.email"></span>
+      </div>
+    </div>
+
+    <nav class="drawer-menu" aria-label="Главное меню">
+      <button class="drawer-menu-item" type="button" id="createGroupBtn" data-action="open-group-dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>Создать беседу</span>
+      </button>
+
+      <button class="drawer-menu-item" type="button" id="createDialogBtn" data-action="open-user-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span>Создать диалог</span>
+      </button>
+
+      <a href="settings.html" class="drawer-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>Настройки аккаунта</span>
+      </a>
+
+      <div class="drawer-menu-divider"></div>
+
+      <button class="drawer-menu-item" type="button" id="resendVerificationBtn" data-action="resend-email-verification">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>Повторить подтверждение почты</span>
+      </button>
+
+      <button class="drawer-menu-item" type="button" id="logoutBtn" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Выйти</span>
+      </button>
+    </nav>
+
+    <div class="drawer-footer"><span class="app-version">GlassGo</span></div>
+  </aside>
+
+  <div class="app" data-component="MessengerApp">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Меню" data-action="open-drawer">
+          <div class="hamburger-icon"><span></span><span></span><span></span></div>
+        </button>
+
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="dialogSearchInput" placeholder="Поиск" data-action="search-dialogs">
+        </div>
+      </div>
+
+      <div class="sidebar-tabs" id="dialogTabs" data-component="DialogTabs">
+        <button class="tab-item active" type="button" data-filter="all">Все</button>
+        <button class="tab-item" type="button" data-filter="personal">Личные</button>
+        <button class="tab-item" type="button" data-filter="group">Группы</button>
+      </div>
+
+      <div class="chat-list" id="dialogList" data-component="DialogList" aria-live="polite"></div>
+    </aside>
+
+    <section class="main" data-component="ChatWindow">
+      <div class="main-empty" id="emptyChatState">
+        <p>Выберите диалог или создайте новый</p>
+      </div>
+
+      <div id="activeChat" class="hidden" style="display:none; flex-direction:column; height:100vh;">
+        <div class="chat-header">
+          <button class="btn-icon hidden" id="chatBackBtn" type="button" aria-label="Назад" data-action="close-chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="avatar" id="chatAvatar" data-bind="dialog.avatar"></div>
+          <div class="chat-header-info" id="chatHeaderInfo" data-action="open-dialog-info">
+            <div class="chat-header-name" id="chatTitle" data-bind="dialog.title"></div>
+            <div class="chat-header-status" id="chatStatus" data-bind="dialog.status"></div>
+          </div>
+        </div>
+
+        <div class="messages" id="messagesContainer" data-component="MessageList" aria-live="polite"></div>
+
+        <form class="message-input-area" id="messageForm" data-action="send-message">
+          <div class="message-input-wrapper">
+            <textarea rows="1" placeholder="Сообщение..." id="messageInput" name="message" required></textarea>
+          </div>
+          <button class="btn-send" id="sendBtn" type="submit" aria-label="Отправить">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <aside class="right-panel" id="rightPanel" data-component="DialogInfoPanel">
+      <div class="right-panel-inner">
+        <div class="right-panel-header">
+          <button class="btn-icon" id="rightPanelClose" type="button" aria-label="Закрыть" data-action="close-dialog-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <h3>Информация</h3>
+        </div>
+        <div class="profile-panel-content" id="dialogInfoContent"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-overlay" id="userSearchModal" data-component="UserSearchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="userSearchTitle">Выбор пользователей</h3>
+        <button class="btn-icon" type="button" data-action="close-user-search" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="search-bar"><input type="search" id="userSearchInput" placeholder="Поиск пользователей" data-action="search-users"></div>
+        <div id="userSearchResults" class="contacts-list" data-component="UserSearchResults"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="finishGroupBtn" type="button" data-action="finish-group">Готово</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer" data-component="ToastContainer"></div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
