@@ -114,5 +114,19 @@
   </main>
 
   <script src="js/auth.js" defer></script>
+  <script>
+    // Тест WebSocket
+    const ws = new WebSocket('ws://localhost:8080/ws/chat');
+    ws.onopen = () => {
+      console.log('WebSocket подключен!');
+      ws.send('Привет от клиента!');
+    };
+    ws.onmessage = (event) => {
+      console.log('Получено от сервера:', event.data);
+    };
+    ws.onerror = (error) => {
+      console.error('WebSocket ошибка:', error);
+    };
+  </script>
 </body>
 </html>
