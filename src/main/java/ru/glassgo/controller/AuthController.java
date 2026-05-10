@@ -1,34 +1,41 @@
 package ru.glassgo.controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.sql.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@WebServlet("/api/auth/login")
-public class AuthController extends HttpServlet {
-    private Gson gson = new Gson();
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, java.io.IOException {
+/**
+ * REST-контроллер авторизации пользователей.
+ * Обрабатывает запросы на /api/auth/login.
+ *
+ * TODO: реализовать полноценную аутентификацию (проверка пароля по BCrypt-хешу,
+ *       генерация JWT-токенов, refresh-токен, регистрация, подтверждение email).
+ */
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
 
-        // Читаем JSON из запроса
-        BufferedReader reader = req.getReader();
-        JsonObject json = gson.fromJson(reader, JsonObject.class);
-        String email = json.get("email").getAsString();
-        String password = json.get("password").getAsString(); // Временно не проверяем пароль
+    /**
+     * Принимает JSON с полями email и password.
+     * Пока возвращает заглушку — реальная аутентификация не реализована.
+     */
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String password = body.get("password");
 
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        PrintWriter out = resp.getWriter();
+        Map<String, Object> response = new HashMap<>();
 
+        if (email == null || password == null) {
+            response.put("message", "Email и пароль обязательны");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // TODO: найти пользователя в БД по email, проверить пароль через BCrypt,
+        //       сгенерировать JWT access/refresh токены и вернуть их клиенту.
+        response.put("message", "Авторизация пока не реализована");
+        return ResponseEntity.status(501).body(response);
     }
 }

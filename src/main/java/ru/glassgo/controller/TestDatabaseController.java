@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Тестовый контроллер для проверки подключения к базе данных.
+ * Выполняет простой SQL-запрос (COUNT по таблице users)
+ * и возвращает результат или сообщение об ошибке.
+ */
 @RestController
 @RequestMapping("/api/test")
 public class TestDatabaseController {
@@ -16,6 +21,10 @@ public class TestDatabaseController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * Проверяет соединение с БД, выполняя SELECT COUNT(*) FROM users.
+     * @return JSON со статусом подключения и количеством пользователей.
+     */
     @GetMapping("/db")
     public Map<String, Object> testDatabase() {
         Map<String, Object> response = new HashMap<>();

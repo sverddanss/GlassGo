@@ -1,17 +1,13 @@
 /**
- * GlassGo - Main Application Module
- * Handles dialogs, messages, WebSocket connections, and UI interactions
+ * GlassGo — Основной модуль мессенджера.
+ * Управляет диалогами, сообщениями, WebSocket-соединением,
+ * боковой панелью и всей UI-логикой главной страницы.
  */
-// В самом верху каждого JS файла
-const API_BASE = '/GlassGo_war/api';
-console.log('API_BASE:', API_BASE);
-const contextPath = window.location.pathname.split('/')[1];
-this.apiBase = '/' + contextPath + '/api';
 
-
+/** Главный класс приложения-мессенджера. Инициализируется при загрузке DOM. */
 class MessengerApp {
     constructor() {
-        this.apiBase = '/GlassGo_war/api';
+        this.apiBase = '/api';
         this.ws = null;
         this.currentUser = null;
         this.currentDialog = null;
@@ -24,8 +20,8 @@ class MessengerApp {
         this.init();
     }
 
+    /** Инициализирует приложение: проверяет авторизацию, загружает данные, запускает WebSocket. */
     async init() {
-        // Check authentication
         if (!this.checkAuth()) {
             window.location.href = 'login.html';
             return;
@@ -38,6 +34,7 @@ class MessengerApp {
         this.setupMobileHandling();
     }
 
+    /** Проверяет наличие access-токена в localStorage. */
     checkAuth() {
         const token = localStorage.getItem('accessToken');
         if (!token) {
@@ -46,6 +43,7 @@ class MessengerApp {
         return true;
     }
 
+    /** Загружает данные текущего пользователя с сервера (GET /users/me). */
     async loadCurrentUser() {
         try {
             const response = await this.apiRequest('/users/me');
@@ -60,8 +58,8 @@ class MessengerApp {
         }
     }
 
+    /** Обновляет все элементы UI (аватар, имя, email, никнейм) данными текущего пользователя. */
     updateUserUI() {
-        // Update avatar
         const avatarElements = document.querySelectorAll('[data-bind="currentUser.avatar"]');
         avatarElements.forEach(el => {
             if (this.currentUser.avatar) {
@@ -73,69 +71,69 @@ class MessengerApp {
             }
         });
 
-        // Update name
+
         const nameElements = document.querySelectorAll('[data-bind="currentUser.fullName"]');
         nameElements.forEach(el => {
             el.textContent = this.currentUser.fullName;
         });
 
-        // Update email
+
         const emailElements = document.querySelectorAll('[data-bind="currentUser.email"]');
         emailElements.forEach(el => {
             el.textContent = this.currentUser.email;
         });
 
-        // Update nickname
+
         const nicknameElements = document.querySelectorAll('[data-bind="currentUser.nickname"]');
         nicknameElements.forEach(el => {
             el.textContent = this.currentUser.nickname || this.currentUser.firstName;
         });
     }
 
+    /** Привязывает обработчики событий ко всем интерактивным элементам страницы. */
     bindEvents() {
-        // Hamburger menu
         const hamburger = document.getElementById('hamburgerBtn');
         if (hamburger) {
             hamburger.addEventListener('click', () => this.toggleDrawer());
         }
 
-        // Drawer overlay
+
         const overlay = document.getElementById('drawerOverlay');
         if (overlay) {
             overlay.addEventListener('click', () => this.closeDrawer());
         }
 
-        // Logout button
+
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => this.logout());
         }
 
-        // Create dialog button (FAB)
+
         const fab = document.getElementById('createDialogFab');
         if (fab) {
             fab.addEventListener('click', () => this.openUserSearchModal());
         }
 
-        // Create dialog from drawer
+
         const createDialogBtn = document.getElementById('createDialogBtn');
         if (createDialogBtn) {
             createDialogBtn.addEventListener('click', () => this.openUserSearchModal());
         }
 
-        // Create group button
+
         const createGroupBtn = document.getElementById('createGroupBtn');
         if (createGroupBtn) {
             createGroupBtn.addEventListener('click', () => this.openGroupDialog());
         }
 
-        // Resend verification
+
         const resendBtn = document.getElementById('resendVerificationBtn');
         if (resendBtn) {
             resendBtn.addEventListener('click', () => this.resendVerification());
         }
 
-        // Dialog search
+
         const searchInput = document.getElementById('dialogSearchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -144,7 +142,7 @@ class MessengerApp {
             });
         }
 
-        // Dialog tabs
+
         const tabs = document.querySelectorAll('[data-filter]');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -155,37 +153,38 @@ class MessengerApp {
             });
         });
 
-        // Message form
+
         const messageForm = document.getElementById('messageForm');
         if (messageForm) {
             messageForm.addEventListener('submit', (e) => this.sendMessage(e));
         }
 
-        // Chat header click (open info panel)
+
         const chatHeader = document.getElementById('chatHeaderInfo');
         if (chatHeader) {
             chatHeader.addEventListener('click', () => this.openDialogInfo());
         }
 
-        // Close right panel
+
         const closePanel = document.getElementById('rightPanelClose');
         if (closePanel) {
             closePanel.addEventListener('click', () => this.closeDialogInfo());
         }
 
-        // Close chat button (mobile)
+
         const chatBackBtn = document.getElementById('chatBackBtn');
         if (chatBackBtn) {
             chatBackBtn.addEventListener('click', () => this.closeChat());
         }
 
-        // Finish group button
+
         const finishGroupBtn = document.getElementById('finishGroupBtn');
         if (finishGroupBtn) {
             finishGroupBtn.addEventListener('click', () => this.createGroup());
         }
     }
 
+    /** Устанавливает WebSocket-соединение с сервером; при обрыве — автоматически переподключается через 5 сек. */
     setupWebSocket() {
         const token = localStorage.getItem('accessToken');
         const wsUrl = `ws://${window.location.host}/ws?token=${token}`;
@@ -211,6 +210,7 @@ class MessengerApp {
         };
     }
 
+    /** Маршрутизирует входящие WebSocket-сообщения по типу (new_message, typing и т.д.). */
     handleWebSocketMessage(data) {
         switch (data.type) {
             case 'new_message':
@@ -231,23 +231,24 @@ class MessengerApp {
         }
     }
 
+    /** Обрабатывает новое входящее сообщение: добавляет в чат и обновляет список диалогов. */
     handleNewMessage(message) {
-        // Add to messages if current dialog
         if (this.currentDialog && this.currentDialog.id === message.dialogId) {
             this.messages.push(message);
             this.renderMessages();
             this.scrollToBottom();
         }
 
-        // Update dialog list
+
         this.loadDialogs();
 
-        // Show notification if not active
+
         if (!this.isDialogActive(message.dialogId)) {
             this.showNotification(message);
         }
     }
 
+    /** Помечает сообщение как прочитанное в текущем чате. */
     handleMessageRead(messageId, dialogId) {
         if (this.currentDialog && this.currentDialog.id === dialogId) {
             const message = this.messages.find(m => m.id === messageId);
@@ -258,8 +259,8 @@ class MessengerApp {
         }
     }
 
+    /** Обновляет статус пользователя (online/offline) в списке диалогов и текущем чате. */
     handleUserStatus(userId, status) {
-        // Update status in dialog list
         const dialog = this.dialogs.find(d =>
             d.type === 'personal' && d.participants?.includes(userId)
         );
@@ -268,7 +269,7 @@ class MessengerApp {
             this.renderDialogs();
         }
 
-        // Update current dialog status
+
         if (this.currentDialog && this.currentDialog.type === 'personal') {
             const otherParticipant = this.currentDialog.participants?.find(p => p !== this.currentUser.id);
             if (otherParticipant === userId) {
@@ -277,6 +278,7 @@ class MessengerApp {
         }
     }
 
+    /** Показывает индикатор «печатает...» в текущем чате; скрывается через 2 секунды. */
     handleTypingIndicator(dialogId, userId) {
         if (this.currentDialog && this.currentDialog.id === dialogId && userId !== this.currentUser.id) {
             const statusEl = document.getElementById('chatStatus');
@@ -291,6 +293,7 @@ class MessengerApp {
         }
     }
 
+    /** Загружает список диалогов пользователя с сервера (GET /dialogs). */
     async loadDialogs() {
         try {
             const response = await this.apiRequest('/dialogs');
@@ -303,18 +306,19 @@ class MessengerApp {
         }
     }
 
+    /** Отрисовывает список диалогов с учётом активного фильтра и поискового запроса. */
     renderDialogs() {
         const container = document.getElementById('dialogList');
         if (!container) return;
 
         let filteredDialogs = this.dialogs;
 
-        // Apply filter
+
         if (this.activeFilter !== 'all') {
             filteredDialogs = filteredDialogs.filter(d => d.type === this.activeFilter);
         }
 
-        // Apply search
+
         if (this.searchQuery) {
             filteredDialogs = filteredDialogs.filter(d =>
                 d.title.toLowerCase().includes(this.searchQuery) ||
@@ -347,6 +351,7 @@ class MessengerApp {
         });
     }
 
+    /** Генерирует HTML-разметку одного элемента диалога для списка. */
     renderDialogItem(dialog) {
         const isActive = this.currentDialog && this.currentDialog.id === dialog.id;
         const avatar = dialog.avatar || this.getInitials(dialog.title);
@@ -378,6 +383,7 @@ class MessengerApp {
         `;
     }
 
+    /** Открывает диалог: загружает его данные и сообщения, показывает окно чата. */
     async openDialog(dialogId) {
         try {
             const response = await this.apiRequest(`/dialogs/${dialogId}`);
@@ -392,6 +398,7 @@ class MessengerApp {
         }
     }
 
+    /** Загружает историю сообщений для указанного диалога. */
     async loadMessages(dialogId) {
         try {
             const response = await this.apiRequest(`/dialogs/${dialogId}/messages`);
@@ -404,6 +411,7 @@ class MessengerApp {
         }
     }
 
+    /** Отрисовывает все сообщения в окне чата с разделителями по датам. */
     renderMessages() {
         const container = document.getElementById('messagesContainer');
         if (!container) return;
@@ -435,6 +443,7 @@ class MessengerApp {
         this.scrollToBottom();
     }
 
+    /** Генерирует HTML-разметку одного сообщения (входящего или исходящего). */
     renderMessage(message, isOutgoing) {
         const time = this.formatTime(message.createdAt);
         const statusIcon = isOutgoing ? this.getStatusIcon(message.status) : '';
@@ -469,6 +478,7 @@ class MessengerApp {
         `;
     }
 
+    /** Отправляет сообщение: оптимистично добавляет в UI, затем подтверждает через API. */
     async sendMessage(e) {
         e.preventDefault();
         const input = document.getElementById('messageInput');
@@ -476,11 +486,11 @@ class MessengerApp {
 
         if (!text || !this.currentDialog) return;
 
-        // Clear input
+
         input.value = '';
         input.style.height = 'auto';
 
-        // Optimistic update
+
         const tempMessage = {
             id: Date.now(),
             text: text,
@@ -493,7 +503,7 @@ class MessengerApp {
         this.messages.push(tempMessage);
         this.renderMessages();
 
-        // Send typing stop
+
         this.sendTypingStop();
 
         try {
@@ -504,19 +514,18 @@ class MessengerApp {
 
             if (response.ok) {
                 const sentMessage = await response.json();
-                // Replace temp message
+
                 const index = this.messages.findIndex(m => m.id === tempMessage.id);
                 if (index !== -1) {
                     this.messages[index] = sentMessage;
                     this.renderMessages();
                 }
 
-                // Update dialog list
+
                 this.loadDialogs();
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            // Mark as failed
             const index = this.messages.findIndex(m => m.id === tempMessage.id);
             if (index !== -1) {
                 this.messages[index].status = 'failed';
@@ -525,6 +534,7 @@ class MessengerApp {
         }
     }
 
+    /** Отправляет WebSocket-событие «печатает» в текущий диалог. */
     sendTyping() {
         if (this.ws && this.ws.readyState === WebSocket.OPEN && this.currentDialog) {
             this.ws.send(JSON.stringify({
@@ -534,6 +544,7 @@ class MessengerApp {
         }
     }
 
+    /** Отправляет WebSocket-событие «прекратил печатать». */
     sendTypingStop() {
         if (this.ws && this.ws.readyState === WebSocket.OPEN && this.currentDialog) {
             this.ws.send(JSON.stringify({
@@ -543,15 +554,17 @@ class MessengerApp {
         }
     }
 
+    /** Помечает все сообщения диалога как прочитанные и обновляет счётчики. */
     async markMessagesAsRead(dialogId) {
         try {
             await this.apiRequest(`/dialogs/${dialogId}/read`, { method: 'POST' });
-            this.loadDialogs(); // Update unread counts
+            this.loadDialogs();
         } catch (error) {
             console.error('Error marking as read:', error);
         }
     }
 
+    /** Показывает окно активного чата, обновляет заголовок и аватар; на мобильных скрывает сайдбар. */
     showChatWindow() {
         const emptyState = document.getElementById('emptyChatState');
         const activeChat = document.getElementById('activeChat');
@@ -574,7 +587,7 @@ class MessengerApp {
 
         this.updateChatStatus(this.getParticipantStatus());
 
-        // On mobile, hide sidebar
+
         if (window.innerWidth <= 768) {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) sidebar.classList.add('hidden-mobile');
@@ -584,6 +597,7 @@ class MessengerApp {
         }
     }
 
+    /** Закрывает окно чата, сбрасывает текущий диалог; на мобильных возвращает сайдбар. */
     closeChat() {
         const emptyState = document.getElementById('emptyChatState');
         const activeChat = document.getElementById('activeChat');
@@ -594,13 +608,14 @@ class MessengerApp {
         this.currentDialog = null;
         this.messages = [];
 
-        // On mobile, show sidebar
+
         if (window.innerWidth <= 768) {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) sidebar.classList.remove('hidden-mobile');
         }
     }
 
+    /** Обновляет текст и стиль статуса собеседника в заголовке чата. */
     updateChatStatus(status) {
         const statusEl = document.getElementById('chatStatus');
         if (statusEl) {
@@ -613,6 +628,7 @@ class MessengerApp {
         }
     }
 
+    /** Возвращает текстовый статус собеседника или количество участников группы. */
     getParticipantStatus() {
         if (this.currentDialog.type === 'group') {
             return `${this.currentDialog.participantCount || 0} участников`;
@@ -630,6 +646,7 @@ class MessengerApp {
         return 'offline';
     }
 
+    /** Загружает и показывает информационную панель текущего диалога (правый слайд). */
     async openDialogInfo() {
         if (!this.currentDialog) return;
 
@@ -638,7 +655,6 @@ class MessengerApp {
 
         if (!panel || !content) return;
 
-        // Load dialog info
         try {
             const response = await this.apiRequest(`/dialogs/${this.currentDialog.id}/info`);
             if (response.ok) {
@@ -653,6 +669,7 @@ class MessengerApp {
         this.isRightPanelOpen = true;
     }
 
+    /** Скрывает информационную панель диалога. */
     closeDialogInfo() {
         const panel = document.getElementById('rightPanel');
         if (panel) {
@@ -661,6 +678,7 @@ class MessengerApp {
         }
     }
 
+    /** Генерирует HTML информационной панели (профиль пользователя или список участников группы). */
     renderDialogInfo(info) {
         if (info.type === 'group') {
             return `
@@ -722,6 +740,7 @@ class MessengerApp {
         `;
     }
 
+    /** Открывает модальное окно выбора пользователя для создания личного диалога. */
     openUserSearchModal() {
         const modal = document.getElementById('userSearchModal');
         if (!modal) return;
@@ -732,19 +751,20 @@ class MessengerApp {
         modal.classList.add('open');
         this.loadUserSearchResults();
 
-        // Bind search
+
         const searchInput = document.getElementById('userSearchInput');
         if (searchInput) {
             searchInput.value = '';
             searchInput.oninput = () => this.loadUserSearchResults(searchInput.value);
         }
 
-        // Bind close
+
         document.querySelectorAll('[data-action="close-user-search"]').forEach(btn => {
             btn.onclick = () => this.closeUserSearchModal();
         });
     }
 
+    /** Открывает модальное окно выбора участников для создания групповой беседы. */
     openGroupDialog() {
         const modal = document.getElementById('userSearchModal');
         if (!modal) return;
@@ -756,19 +776,20 @@ class MessengerApp {
         this.selectedUsers = [];
         this.loadUserSearchResults();
 
-        // Bind search
+
         const searchInput = document.getElementById('userSearchInput');
         if (searchInput) {
             searchInput.value = '';
             searchInput.oninput = () => this.loadUserSearchResults(searchInput.value);
         }
 
-        // Bind close
+
         document.querySelectorAll('[data-action="close-user-search"]').forEach(btn => {
             btn.onclick = () => this.closeUserSearchModal();
         });
     }
 
+    /** Ищет пользователей для модального окна создания диалога/группы. */
     async loadUserSearchResults(query = '') {
         const container = document.getElementById('userSearchResults');
         if (!container) return;
@@ -781,7 +802,7 @@ class MessengerApp {
                 const users = await response.json();
                 container.innerHTML = users.map(user => this.renderUserSearchItem(user)).join('');
 
-                // Add click handlers
+
                 container.querySelectorAll('.contact-item').forEach(item => {
                     item.addEventListener('click', () => {
                         const userId = parseInt(item.dataset.id);
@@ -794,6 +815,7 @@ class MessengerApp {
         }
     }
 
+    /** Генерирует HTML-разметку карточки пользователя в поиске. */
     renderUserSearchItem(user) {
         const isSelected = this.selectedUsers && this.selectedUsers.includes(user.id);
 
@@ -817,15 +839,17 @@ class MessengerApp {
         `;
     }
 
+    /**
+     * Обрабатывает выбор пользователя в модальном окне.
+     * Для личного диалога — сразу создаёт чат; для группы — переключает выделение.
+     */
     selectUserForDialog(userId, element) {
         const isGroupCreation = document.getElementById('finishGroupBtn').classList.contains('hidden') === false;
 
         if (!isGroupCreation) {
-            // Single dialog creation
             this.createDialogWithUser(userId);
             this.closeUserSearchModal();
         } else {
-            // Group creation - toggle selection
             if (this.selectedUsers.includes(userId)) {
                 this.selectedUsers = this.selectedUsers.filter(id => id !== userId);
                 element.classList.remove('selected');
@@ -834,7 +858,7 @@ class MessengerApp {
                 element.classList.add('selected');
             }
 
-            // Update selection check
+
             const checkSpan = element.querySelector('.selection-check');
             if (checkSpan) {
                 checkSpan.textContent = this.selectedUsers.includes(userId) ? '✓' : '';
@@ -842,6 +866,7 @@ class MessengerApp {
         }
     }
 
+    /** Создаёт личный диалог с указанным пользователем (POST /dialogs). */
     async createDialogWithUser(userId) {
         try {
             const response = await this.apiRequest('/dialogs', {
@@ -861,6 +886,7 @@ class MessengerApp {
         }
     }
 
+    /** Создаёт групповую беседу с выбранными участниками (POST /dialogs/groups). */
     async createGroup() {
         if (!this.selectedUsers || this.selectedUsers.length === 0) {
             this.showToast('Выберите хотя бы одного участника', 'error');
@@ -892,6 +918,7 @@ class MessengerApp {
         }
     }
 
+    /** Закрывает модальное окно поиска пользователей. */
     closeUserSearchModal() {
         const modal = document.getElementById('userSearchModal');
         if (modal) {
@@ -900,6 +927,7 @@ class MessengerApp {
         this.selectedUsers = null;
     }
 
+    /** Открывает/закрывает боковую панель (drawer) с меню. */
     toggleDrawer() {
         const drawer = document.getElementById('drawer');
         const overlay = document.getElementById('drawerOverlay');
@@ -915,6 +943,7 @@ class MessengerApp {
         this.isDrawerOpen = !this.isDrawerOpen;
     }
 
+    /** Принудительно закрывает боковую панель. */
     closeDrawer() {
         const drawer = document.getElementById('drawer');
         const overlay = document.getElementById('drawerOverlay');
@@ -924,6 +953,7 @@ class MessengerApp {
         this.isDrawerOpen = false;
     }
 
+    /** Выполняет выход: закрывает WebSocket, очищает токены и перенаправляет на страницу входа. */
     async logout() {
         try {
             await this.apiRequest('/auth/logout', { method: 'POST' });
@@ -942,6 +972,7 @@ class MessengerApp {
         window.location.href = 'login.html';
     }
 
+    /** Повторно отправляет письмо подтверждения email. */
     async resendVerification() {
         try {
             const response = await this.apiRequest('/auth/resend-verification', {
@@ -957,6 +988,7 @@ class MessengerApp {
         }
     }
 
+    /** Выполняет fetch-запрос к API с авторизацией; при 401 пробует обновить токен и повторить запрос. */
     async apiRequest(endpoint, options = {}) {
         const token = localStorage.getItem('accessToken');
         const defaultOptions = {
@@ -974,7 +1006,7 @@ class MessengerApp {
         if (response.status === 401) {
             const refreshed = await this.refreshToken();
             if (refreshed) {
-                // Retry with new token
+
                 const newToken = localStorage.getItem('accessToken');
                 options.headers = {
                     ...options.headers,
@@ -992,6 +1024,7 @@ class MessengerApp {
         return response;
     }
 
+    /** Обновляет access-токен через refresh-токен (POST /auth/refresh). */
     async refreshToken() {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return false;
@@ -1016,6 +1049,7 @@ class MessengerApp {
         return false;
     }
 
+    /** Настраивает обработку ресайза окна для корректной работы на мобильных. */
     setupMobileHandling() {
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768 && this.currentDialog) {
@@ -1025,11 +1059,12 @@ class MessengerApp {
         });
     }
 
+    /** Показывает контекстное меню для диалога. TODO: реализовать действия (закрепить, удалить и т.д.). */
     showContextMenu(e, dialogId) {
-        // Implementation for context menu (pin, delete, etc.)
         console.log('Context menu for dialog:', dialogId);
     }
 
+    /** Показывает браузерное уведомление о новом сообщении (Notification API). */
     showNotification(message) {
         if (Notification.permission === 'granted') {
             new Notification(message.senderName || 'Новое сообщение', {
@@ -1041,6 +1076,7 @@ class MessengerApp {
         }
     }
 
+    /** Прокручивает контейнер сообщений вниз. */
     scrollToBottom() {
         const container = document.getElementById('messagesContainer');
         if (container) {
@@ -1048,15 +1084,18 @@ class MessengerApp {
         }
     }
 
+    /** Проверяет, активен ли указанный диалог и в фокусе ли окно. */
     isDialogActive(dialogId) {
         return this.currentDialog && this.currentDialog.id === dialogId && document.hasFocus();
     }
 
+    /** Возвращает инициалы из полного имени (макс. 2 символа). */
     getInitials(name) {
         if (!name) return '?';
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
+    /** Возвращает CSS-градиент для аватара на основе id пользователя. */
     getAvatarGradient(id) {
         const gradients = [
             'linear-gradient(135deg, #7dd3fc 0%, #a78bfa 100%)',
@@ -1068,6 +1107,7 @@ class MessengerApp {
         return gradients[id % gradients.length];
     }
 
+    /** Возвращает SVG-иконку статуса сообщения (sent / delivered / read / sending / failed). */
     getStatusIcon(status) {
         switch (status) {
             case 'sent': return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -1079,6 +1119,7 @@ class MessengerApp {
         }
     }
 
+    /** Форматирует timestamp: сегодня — время, на неделе — день, старее — дата. */
     formatTime(timestamp) {
         const date = new Date(timestamp);
         const now = new Date();
@@ -1093,6 +1134,7 @@ class MessengerApp {
         }
     }
 
+    /** Форматирует timestamp в относительное время («5 мин назад», «2 ч назад» и т.д.). */
     formatRelativeTime(timestamp) {
         const date = new Date(timestamp);
         const now = new Date();
@@ -1110,6 +1152,7 @@ class MessengerApp {
         return date.toLocaleDateString();
     }
 
+    /** Экранирует HTML-спецсимволы для безопасной вставки текста в DOM. */
     escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -1117,6 +1160,7 @@ class MessengerApp {
         return div.innerHTML;
     }
 
+    /** Показывает всплывающее уведомление (toast); исчезает через 3 секунды. */
     showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
         if (!container) return;

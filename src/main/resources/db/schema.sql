@@ -1,11 +1,11 @@
--- GlassGo Database Schema for MariaDB
--- Структура БД на основе вашего макета
+-- GlassGo: схема базы данных (MariaDB)
+-- Содержит таблицы пользователей, чатов, сообщений и вспомогательные
 
--- Создаем базу данных если нет
+-- Инициализация базы данных
 CREATE DATABASE IF NOT EXISTS glassgo;
 USE glassgo;
 
--- 1. Таблица пользователей
+-- Пользователи: учётные данные, статус онлайн, подтверждение email
 CREATE TABLE IF NOT EXISTS users (
                                      id INT PRIMARY KEY AUTO_INCREMENT,
                                      first_name VARCHAR(50) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_nickname (nickname)
     );
 
--- 2. Таблица сброса паролей
+-- Токены сброса пароля (хеш + срок действия)
 CREATE TABLE IF NOT EXISTS password_resets (
                                                id INT PRIMARY KEY AUTO_INCREMENT,
                                                user_id INT NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS password_resets (
     INDEX idx_expires (expires_at)
     );
 
--- 3. Таблица чатов (личные и групповые)
+-- Чаты: личные (private) и групповые (group)
 CREATE TABLE IF NOT EXISTS chats (
                                      id INT PRIMARY KEY AUTO_INCREMENT,
                                      chat_type ENUM('private', 'group') NOT NULL DEFAULT 'private',
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS chats (
     INDEX idx_chat_type (chat_type)
     );
 
--- 4. Таблица участников чатов
+-- Связь M:N между чатами и пользователями
 CREATE TABLE IF NOT EXISTS chat_members (
                                             chat_id INT NOT NULL,
                                             user_id INT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS chat_members (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
--- 5. Таблица сообщений
+-- Сообщения чатов с отметкой о прочтении
 CREATE TABLE IF NOT EXISTS messages (
                                         id INT PRIMARY KEY AUTO_INCREMENT,
                                         chat_id INT NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS messages (
     INDEX idx_sent_at (sent_at)
     );
 
--- 6. Вспомогательная таблица для непрочитанных сообщений
+-- Связь M:N для отслеживания непрочитанных сообщений каждого пользователя
 CREATE TABLE IF NOT EXISTS unread_messages (
                                                message_id INT NOT NULL,
                                                user_id INT NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS unread_messages (
 -- ТЕСТОВЫЕ ДАННЫЕ
 -- ============================================
 
--- Вставляем тестового пользователя (пароль: 123, хеш для BCrypt будет добавлен позже)
+-- Тестовые пользователи (пароли — заглушки, заменить на реальные BCrypt-хеши)
 INSERT INTO users (first_name, last_name, email, password_hash, nickname, is_email_confirmed, status) VALUES
                                                                                                           ('Иван', 'Петров', 'ivan@example.com', '$2a$10$dummyHashForNow1234567890', 'ivan_p', TRUE, 'online'),
                                                                                                           ('Мария', 'Сидорова', 'maria@example.com', '$2a$10$dummyHashForNow1234567890', 'maria_s', TRUE, 'online'),

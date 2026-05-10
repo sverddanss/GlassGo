@@ -8,12 +8,22 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Обработчик WebSocket-соединений чата.
+ * Управляет пулом активных сессий: добавляет при подключении,
+ * удаляет при отключении. Входящие сообщения рассылаются
+ * всем подключённым клиентам (broadcast/эхо-режим).
+ *
+ * TODO: заменить эхо-режим на маршрутизацию сообщений
+ *       по конкретным чатам и пользователям.
+ */
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
-    // Список всех активных сессий
+    /** Потокобезопасный список активных WebSocket-сессий. */
     private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
+    /** Регистрирует новую сессию при подключении клиента. */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
@@ -21,12 +31,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         System.out.println("📊 Всего сессий: " + sessions.size());
     }
 
+    /**
+     * Обрабатывает входящее текстовое сообщение.
+     * Пересылает его всем открытым сессиям (broadcast).
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         System.out.println("📨 Получено сообщение: " + payload);
 
-        // Эхо-ответ (отправляем обратно всем)
         for (WebSocketSession s : sessions) {
             if (s.isOpen()) {
                 s.sendMessage(new TextMessage("Эхо: " + payload));
@@ -34,6 +47,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /** Удаляет сессию из пула при отключении клиента. */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session);

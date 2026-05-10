@@ -3,6 +3,11 @@ package ru.glassgo.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * JPA-сущность пользователя, маппится на таблицу «users».
+ * Хранит учётные данные, статус онлайн/оффлайн
+ * и мета-информацию (дата регистрации, последний визит).
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -36,16 +41,27 @@ public class User {
     @Column(name = "last_seen")
     private LocalDateTime lastSeen;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Constructors
+    /** Автоматически заполняет createdAt и updatedAt при создании записи. */
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /** Автоматически обновляет updatedAt при каждом изменении записи. */
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public User() {}
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
