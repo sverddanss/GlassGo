@@ -1,6 +1,7 @@
 package ru.glassgo.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -26,7 +27,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * setAllowedOrigins("*") — разрешает подключения с любого домена (для разработки).
      */
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
         registry.addHandler(chatWebSocketHandler, "/ws/chat")
                 .setAllowedOrigins("*");
     }
