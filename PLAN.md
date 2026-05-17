@@ -12,10 +12,10 @@
 ## Фаза 1: Бэкенд — Аутентификация и безопасность
 
 ### 1.1 Реализация регистрации
-- [ ] Создать `UserRepository` (Spring Data JPA)
-- [ ] Создать `UserService` с методами: register, findByEmail, findById
-- [ ] Подключить BCrypt для хеширования паролей (добавить `spring-boot-starter-security` или `BCryptPasswordEncoder` вручную)
-- [ ] Эндпоинт `POST /api/auth/register` — валидация полей, проверка уникальности email/nickname, сохранение в БД
+- [x] Создать `UserRepository` (Spring Data JPA)
+- [x] Создать `UserService` с методами: register, findByEmail, findById
+- [x] Подключить BCrypt для хеширования паролей (добавить `spring-boot-starter-security` или `BCryptPasswordEncoder` вручную)
+- [x] Эндпоинт `POST /api/auth/register` — валидация полей, проверка уникальности email/nickname, сохранение в БД
 
 ### 1.2 Реализация входа
 - [ ] Эндпоинт `POST /api/auth/login` — поиск пользователя, проверка пароля, генерация токенов

@@ -28,6 +28,7 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(unique = true)
     private String nickname;
 
     @Column(name = "is_email_confirmed")
