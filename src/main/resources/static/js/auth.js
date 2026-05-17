@@ -94,11 +94,11 @@ class AuthApp {
                 this.showToast('Успешный вход!', 'success');
                 setTimeout(() => { window.location.href = '/index.html'; }, 500);
             } else {
-                this.showError('loginPasswordError', data.message || 'Неверный email или пароль');
+                this.showToast(data.message || 'Неверный email или пароль', 'error');
             }
         } catch (error) {
             console.error('Login error:', error);
-            this.showError('loginPasswordError', 'Ошибка соединения. Попробуйте позже.');
+            this.showToast('Ошибка соединения. Попробуйте позже.', 'error');
         } finally { this.showLoading(false); }
     }
 
