@@ -2512,3 +2512,56 @@ body:has(.auth-page) {
 	height: auto !important;
 	min-height: 100vh;
 }
+
+/* Toast уведомления */
+.toast-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 10000;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.toast {
+	padding: 14px 20px;
+	border-radius: var(--radius-md);
+	font-size: 0.88rem;
+	font-weight: 500;
+	color: var(--text-primary);
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	animation: toastSlideIn 0.3s ease-out;
+	max-width: 360px;
+}
+
+.toast-success {
+	background: rgba(110, 231, 183, 0.15);
+	border: 1px solid rgba(110, 231, 183, 0.3);
+	color: #6ee7b7;
+}
+
+.toast-error {
+	background: rgba(239, 68, 68, 0.15);
+	border: 1px solid rgba(239, 68, 68, 0.3);
+	color: #fca5a5;
+}
+
+.toast-info {
+	background: rgba(125, 211, 252, 0.15);
+	border: 1px solid rgba(125, 211, 252, 0.3);
+	color: #7dd3fc;
+}
+
+@keyframes toastSlideIn {
+	from {
+		opacity: 0;
+		transform: translateX(100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}

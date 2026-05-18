@@ -66,4 +66,10 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
+
+    public boolean authenticate(String email, String rawPassword) {
+        return userRepository.findByEmail(email)
+                .map(user -> passwordEncoder.matches(rawPassword, user.getPasswordHash()))
+                .orElse(false);
+    }
 }
