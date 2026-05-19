@@ -72,4 +72,26 @@ public class UserService {
                 .map(user -> passwordEncoder.matches(rawPassword, user.getPasswordHash()))
                 .orElse(false);
     }
+
+    @Transactional
+    public User updateProfile(Long userId, String firstName, String lastName, String nickname) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        if (nickname != null && !nickname.equals(user.getNickname())) {
+            if (userRepository.existsByNickname(nickname)) {
+                throw new IllegalArgumentException("Никнейм уже занят");
+            }
+        }
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setNickname(nickname);
+        return userRepository.save(user);
+    }
+    @Transactional
+    public User uploadAvatar(Long userId, String avatarPath) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        user.setAvatar(avatarPath);
+        return userRepository.save(user);
+    }
 }

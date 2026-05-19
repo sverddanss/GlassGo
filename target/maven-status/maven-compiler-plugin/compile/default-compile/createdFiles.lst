@@ -9,6 +9,7 @@ ru\glassgo\controller\AuthController.class
 ru\glassgo\model\User.class
 ru\glassgo\websocket\ChatWebSocketHandler.class
 ru\glassgo\controller\UserController.class
+ru\glassgo\dto\UpdateProfileRequest.class
 ru\glassgo\dto\LoginRequest.class
 ru\glassgo\service\UserService.class
 ru\glassgo\dto\LoginResponse.class
@@ -16,3 +17,4 @@ ru\glassgo\GlassGoApplication.class
 ru\glassgo\controller\TestController.class
 ru\glassgo\dto\UserDto.class
 ru\glassgo\config\JwtAuthFilter.class
+ru\glassgo\config\WebConfig.class

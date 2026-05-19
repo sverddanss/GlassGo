@@ -31,6 +31,9 @@ public class User {
     @Column(unique = true)
     private String nickname;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @Column(name = "is_email_confirmed")
     private boolean isEmailConfirmed = false;
 
@@ -98,4 +101,7 @@ public class User {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }

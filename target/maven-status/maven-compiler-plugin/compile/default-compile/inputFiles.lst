@@ -1,5 +1,6 @@
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\config\JwtAuthFilter.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\config\SecurityConfig.java
+C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\config\WebConfig.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\config\WebSocketConfig.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\controller\AuthController.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\controller\TestController.java
@@ -9,6 +10,7 @@ C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\LoginReques
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\LoginResponse.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\RefreshRequest.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\RegisterRequest.java
+C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\UpdateProfileRequest.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\dto\UserDto.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\GlassGoApplication.java
 C:\Users\Honor\OneDrive\Desktop\GlassGo\src\main\java\ru\glassgo\model\User.java

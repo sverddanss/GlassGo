@@ -8,6 +8,7 @@ public class UserDto {
     private String nickname;
     private String fullName;
     private String status;
+    private String avatar;
     private boolean emailVerified;
     public UserDto() {}
     public static UserDto fromEntity(User user) {
@@ -20,6 +21,7 @@ public class UserDto {
         dto.setFullName(buildFullName(user));
         dto.setStatus(user.getStatus());
         dto.setEmailVerified(user.isEmailConfirmed());
+        dto.setAvatar(user.getAvatar());
         return dto;
     }
     private static String buildFullName(User user) {
@@ -42,4 +44,6 @@ public class UserDto {
     public void setStatus(String status) { this.status = status; }
     public boolean isEmailVerified() { return emailVerified; }
     public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }
